@@ -43,7 +43,6 @@ public class Demo03 {
         frame.add(centerPanel, BorderLayout.CENTER);
     }
 
-
     // 设置窗口的显示属性
     public void showMe() {
         init();
