@@ -50,11 +50,13 @@ public class SwingDemo02 {
         jToolBar.add(jbtEdit);
         jToolBar.add(jbtRemove);
         jToolBar.add(jbtSearch);
+        // 给注册键加一个事件管理器
+        addButtonListener();
         // 将工具栏添加到 JFrame, this 为当前窗口对象
         jFrame.add("North", jToolBar);
     }
 
-    private void addButtonListener () {
+    private void addButtonListener() {
         jbtRegister.addActionListener(new RegisterHandler());  // 按钮添加事件监听器
     }
 
@@ -62,7 +64,9 @@ public class SwingDemo02 {
         @Override
         public void actionPerformed(ActionEvent e) {
             // 创建并显示注册对话框
-
+            System.out.println("鼠标点击");
+            RegisterDialog registerDialog = new RegisterDialog(jFrame, "注册用户");
+            registerDialog.showMe();
         }
     }
 
