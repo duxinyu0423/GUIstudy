@@ -6,8 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import static com.sun.beans.introspect.ClassInfo.clear;
-
 public class RegisterDialog extends JDialog{
     private JLabel jlbEmail; // 注册提示
     private JTextField jtfEmail; // 输入注册信息的文本框
@@ -34,9 +32,9 @@ public class RegisterDialog extends JDialog{
     private JPanel jpHobby;
     private JPanel jpOperation;
     private JPanel mainJPanel;
-    private UserDaoImpForList users;
+    private UserDao users;
 
-    public RegisterDialog(Frame owner, String title) {
+    public RegisterDialog(Frame owner, String title, UserDao users) {
         super(owner, title);
         jlbEmail = new JLabel("Email: ");
         jtfEmail = new JTextField(20);
@@ -67,7 +65,8 @@ public class RegisterDialog extends JDialog{
             jlbHobbies[i] = new JLabel();
         }
         mainJPanel = new JPanel();
-        users = new UserDaoImpForList();
+        // 接受 users
+        this.users = users;
      }
 
      // 设置布局
@@ -151,6 +150,16 @@ public class RegisterDialog extends JDialog{
                     clear(); // 清空组件
                 }
             }
+        }
+    }
+
+    public void clear() {
+        // 清空组件就是将组件还原为初始状态
+        jtfEmail.setText("");
+        jtfName.setText("");
+        jrbFemale.setSelected(true);
+        for(JCheckBox hobby : hobbies) {
+            hobby.setSelected(false);
         }
     }
 

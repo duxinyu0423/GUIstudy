@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Objects;
 
 // 构建主页面工具栏
@@ -22,6 +23,7 @@ public class SwingDemo02 {
     private Icon imaEdit;
     private Icon imaRemove;
     private Icon imaSearch;
+    private UserDao users; // user 要共享
 
     public SwingDemo02() {
         jFrame = new JFrame("工具按钮");
@@ -38,6 +40,7 @@ public class SwingDemo02 {
         jbtEdit.setPreferredSize(new Dimension(320,20));
         jbtRemove.setPreferredSize(new Dimension(320,20));
         jbtSearch.setPreferredSize(new Dimension(320,20));
+        users = new UserDaoImpForList();
         jbtRegister.setToolTipText("注册用户");
         jbtEdit.setToolTipText("编辑用户信息");
         jbtRemove.setToolTipText("删除用户信息");
@@ -58,6 +61,7 @@ public class SwingDemo02 {
 
     private void addButtonListener() {
         jbtRegister.addActionListener(new RegisterHandler());  // 按钮添加事件监听器
+    jbtSearch.addActionListener(new SearchAllHandler());
     }
 
     private class RegisterHandler implements ActionListener {
@@ -65,10 +69,21 @@ public class SwingDemo02 {
         public void actionPerformed(ActionEvent e) {
             // 创建并显示注册对话框
             System.out.println("鼠标点击");
-            RegisterDialog registerDialog = new RegisterDialog(jFrame, "注册用户");
+            RegisterDialog registerDialog = new RegisterDialog(jFrame, "注册用户", users);
             registerDialog.showMe();
         }
     }
+
+private class SearchAllHandler implements ActionListener {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        List<User>tempUsers = users.selectAll();
+        if(tempUsers.size() != 0) {
+            // 浏览所有用户
+            new ShowDataTableDialog(jFrame, "查询结果", tempUsers);
+        }
+    }
+}
 
     private void showMe() {
         init();
