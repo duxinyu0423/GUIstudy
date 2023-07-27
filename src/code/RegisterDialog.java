@@ -2,6 +2,11 @@ package code;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import static com.sun.beans.introspect.ClassInfo.clear;
 
 public class RegisterDialog extends JDialog{
     private JLabel jlbEmail; // 注册提示
@@ -29,6 +34,7 @@ public class RegisterDialog extends JDialog{
     private JPanel jpHobby;
     private JPanel jpOperation;
     private JPanel mainJPanel;
+    private UserDaoImpForList users;
 
     public RegisterDialog(Frame owner, String title) {
         super(owner, title);
@@ -61,10 +67,12 @@ public class RegisterDialog extends JDialog{
             jlbHobbies[i] = new JLabel();
         }
         mainJPanel = new JPanel();
+        users = new UserDaoImpForList();
      }
 
      // 设置布局
     private void init() {
+        addSaveListener();
         jpEmail.add(jlbEmail);
         jpEmail.add(jtfEmail);
         jpName.add(jlbName);
@@ -95,8 +103,59 @@ public class RegisterDialog extends JDialog{
         this.add(mainJPanel); // 给Dialog加入总面板
     }
 
+    // 获取爱好信息，将所有的爱好拼接成一个字符串
+    private String getHobbiesInfo() {
+        StringBuilder hobbiesInfo = new StringBuilder();
+        for(int i = 0; i < hobbies.length; i++) {
+            if(hobbies[i].isSelected()) { // 该爱好所在的按钮被选择
+                String hobbyText = jlbHobbies[i].getText();
+                hobbiesInfo.append(hobbyText).append("  ");
+            }
+        }
+        return hobbiesInfo.toString();
+    }
+
+    // 定义一个单独的方法给保存按钮添加事件监听器
+    private void addSaveListener() {
+        jbtSave.addActionListener(new SaveHandler());
+    }
+
+    // 保存按钮的事件监听器，实现事件监听中的方法
+    private class SaveHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String email = jtfEmail.getText();
+            String name = jtfName.getText();
+            String sex = jrbFemale.isSelected() ? "female" : "male";
+            String hobby = getHobbiesInfo();
+            // 添加用户
+            if (email.length() == 0) {
+                JOptionPane.showMessageDialog(null, "请输入email", "提示", JOptionPane.PLAIN_MESSAGE);
+                jtfEmail.grabFocus(); // 把光标放到email文本框内
+            } else if (!email.matches("[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9]{2,4}")) {
+                JOptionPane.showMessageDialog(null, "email格式错误", "提示", JOptionPane.PLAIN_MESSAGE);
+                jtfEmail.setText(""); // 清空输入框
+                jtfEmail.grabFocus(); // 把光标放到email文本框内
+            } else if (name.length() == 0) {
+                JOptionPane.showMessageDialog(null, "请输入name", "提示", JOptionPane.PLAIN_MESSAGE);
+                jtfName.grabFocus(); // 把光标放到name文本框内
+            } else {
+                if (users.selectByEmail(email) != null) {
+                    JOptionPane.showMessageDialog(null, "该邮箱已经被注册", "提示", JOptionPane.PLAIN_MESSAGE);
+                    jtfEmail.setText(""); // 清空输入框
+                    jtfEmail.grabFocus(); // 把光标放到email文本框内
+                } else {
+                    // 封装用户
+                    User user = new User(email, name, sex, hobby);
+                    users.insert(user); // 储存用户
+                    clear(); // 清空组件
+                }
+            }
+        }
+    }
+
     public void showMe() {
-        this.init();
+        init();
 //        setResizable(false); // 设置不可变大小
         setSize(windowWidth, windowHeight);
         setLocationRelativeTo(null);
