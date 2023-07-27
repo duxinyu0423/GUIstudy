@@ -24,6 +24,7 @@ public class SwingDemo02 {
     private Icon imaRemove;
     private Icon imaSearch;
     private UserDao users; // user 要共享
+    private FixedUsers fixedUsers;
 
     public SwingDemo02() {
         jFrame = new JFrame("工具按钮");
@@ -45,6 +46,8 @@ public class SwingDemo02 {
         jbtEdit.setToolTipText("编辑用户信息");
         jbtRemove.setToolTipText("删除用户信息");
         jbtSearch.setToolTipText("浏览所有用户");
+        fixedUsers = new FixedUsers();
+        users = fixedUsers.copyAssignment();
     }
 
     private void init() {
@@ -81,6 +84,8 @@ private class SearchAllHandler implements ActionListener {
         if(tempUsers.size() != 0) {
             // 浏览所有用户
             new ShowDataTableDialog(jFrame, "查询结果", tempUsers);
+        }else{
+            JOptionPane.showMessageDialog(null, "没有用户信息", "提示", JOptionPane.PLAIN_MESSAGE);
         }
     }
 }

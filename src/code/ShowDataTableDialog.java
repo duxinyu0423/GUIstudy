@@ -22,7 +22,8 @@ public class ShowDataTableDialog extends JDialog {
         // 为每一列设置列宽
         jTable.getColumn("IDX").setPreferredWidth(30);
         jTable.getColumn("email").setPreferredWidth(100);
-        jTable.getColumn("name").setPreferredWidth(60);
+        jTable.getColumn(
+                "name").setPreferredWidth(60);
         jTable.getColumn("sex").setPreferredWidth(60);
         jTable.getColumn("hobby").setPreferredWidth(200);
         // 关闭 JTable 的自动调节功能
